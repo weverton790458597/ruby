@@ -1,6 +1,4 @@
-/* signup.js — link "Crie a sua página também" + modal de contratação.
-   Uso: adicione <script src="signup.js" defer></script> antes de </body> no index.html da bio modelo.
-   Reaproveita as variáveis CSS (--ruby, --ink, --line...) e as classes .btn/.in/.lbl/.msg da página. */
+/* signup.js — link "Crie a sua página também" + modal de contratação. */
 (function () {
   var FN = 'https://abdliioyzkylccfylils.supabase.co/functions/v1/hubbio-checkout';
   var KEY = 'sb_publishable_g6l6_QmwE4Tj85_KF_XHfQ_I4gFlY_n';
@@ -103,8 +101,14 @@
     var social = $('#sgSoc').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 4)
       .map(function (u) { return /^https?:\/\//i.test(u) ? u : 'https://' + u; });
     go.disabled = true; say(msg, 'Criando seu checkout...');
+    
+    // Adicionado explicitamente o 'action: "create"' para a Edge Function identificar a rota correta
     api({
-      action: 'create', subdomain: $('#sgSub').value, nome: $('#sgNome').value, email: $('#sgMail').value, cpfCnpj: $('#sgDoc').value,
+      action: 'create',
+      subdomain: $('#sgSub').value,
+      nome: $('#sgNome').value,
+      email: $('#sgMail').value,
+      cpfCnpj: $('#sgDoc').value,
       prompt: $('#sgPrompt').value,
       config: { name: $('#sgName').value, tagline: $('#sgTag').value, footer: $('#sgFoot').value, avatar: avatar, links: links, social: social }
     }).then(function (d) { location.href = d.url; })
