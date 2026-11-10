@@ -44,9 +44,20 @@
     '<div class="row"><button class="btn pri" id="sgGo" type="submit">Ir para o pagamento</button><button class="btn" id="sgX" type="button">Cancelar</button></div></form>';
   document.body.appendChild(m);
 
+  // Chamada à Edge Function. Lê o corpo como texto para nunca quebrar se vier algo que não é JSON.
   function api(body) {
-    return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY }, body: JSON.stringify(body) })
-      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'Erro'); return d; }); });
+    return fetch(FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.text().then(function (txt) {
+        var d = {};
+        try { d = txt ? JSON.parse(txt) : {}; } catch (e) { d = {}; }
+        if (!r.ok) throw new Error(d.error || d.message || 'Erro ' + r.status + '. Tente novamente.');
+        return d;
+      });
+    }, function () { throw new Error('Sem conexão. Verifique a internet e tente de novo.'); });
   }
   function say(el, t, cls) { el.textContent = t; el.className = 'msg' + (cls ? ' ' + cls : ''); }
 
@@ -66,14 +77,18 @@
         if (v !== $('#sgSub').value) return; // resposta antiga
         subOk = d.available;
         say(out, d.available ? '✓ ' + v + '.' + ROOT + ' está disponível' : (d.reason || 'Indisponível'), d.available ? 'ok' : 'err');
-      }).catch(function () { say(out, 'Não foi possível verificar agora.', 'err'); });
+      }).catch(function () {
+        if (v === $('#sgSub').value) say(out, 'Não foi possível verificar agora.', 'err');
+      });
     }, 400);
   });
 
   // ---- Foto: recorte quadrado 256px em JPEG ----
-  var avatar = '';
+  var avatar = '', photoBusy = false;
   $('#sgPhoto').onchange = function (e) {
-    var f = e.target.files[0]; if (!f) { avatar = ''; return; }
+    var f = e.target.files[0]; avatar = '';
+    if (!f) return;
+    photoBusy = true;
     var fr = new FileReader();
     fr.onload = function () {
       var img = new Image();
@@ -82,9 +97,12 @@
         var s = Math.min(img.width, img.height);
         c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 256, 256);
         avatar = c.toDataURL('image/jpeg', 0.85);
+        photoBusy = false;
       };
+      img.onerror = function () { photoBusy = false; };
       img.src = fr.result;
     };
+    fr.onerror = function () { photoBusy = false; };
     fr.readAsDataURL(f);
   };
 
@@ -93,6 +111,7 @@
     e.preventDefault();
     var msg = $('#sgMsg'), go = $('#sgGo');
     if (!subOk) { say(msg, 'Escolha um endereço disponível.', 'err'); return; }
+    if (photoBusy) { say(msg, 'Aguarde o processamento da foto e tente de novo.', 'err'); return; }
     var links = [];
     for (var i = 0; i < 4; i++) {
       var t = $('[data-t="' + i + '"]').value.trim(), u = $('[data-u="' + i + '"]').value.trim();
@@ -101,8 +120,7 @@
     var social = $('#sgSoc').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 4)
       .map(function (u) { return /^https?:\/\//i.test(u) ? u : 'https://' + u; });
     go.disabled = true; say(msg, 'Criando seu checkout...');
-    
-    // Adicionado explicitamente o 'action: "create"' para a Edge Function identificar a rota correta
+
     api({
       action: 'create',
       subdomain: $('#sgSub').value,
@@ -111,7 +129,9 @@
       cpfCnpj: $('#sgDoc').value,
       prompt: $('#sgPrompt').value,
       config: { name: $('#sgName').value, tagline: $('#sgTag').value, footer: $('#sgFoot').value, avatar: avatar, links: links, social: social }
-    }).then(function (d) { location.href = d.url; })
-      .catch(function (err) { go.disabled = false; say(msg, err.message, 'err'); });
+    }).then(function (d) {
+      if (!d.url) throw new Error('Não recebemos o link de pagamento. Tente novamente.');
+      location.href = d.url;
+    }).catch(function (err) { go.disabled = false; say(msg, err.message, 'err'); });
   };
 })();
