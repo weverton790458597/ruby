@@ -1,12 +1,15 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#0a0708">
+<meta name="color-scheme" content="dark">
 <title>Ruby Bio</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* Layout: single centered column, black stage with a red glow behind the monogram, links as wide ruled bars.
-   Conteúdo vem do Supabase; o lápis (canto inferior direito) abre o editor protegido por senha. */
 :root {
   --black: #0a0708;
   --ink: #130c0e;
@@ -21,7 +24,8 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html { background: var(--black); }
+[hidden] { display: none !important; }
+html { overflow-x: clip; background: var(--black); }
 body {
   background: var(--black);
   color: var(--white);
@@ -29,11 +33,14 @@ body {
   font-weight: 300;
   font-size: 15px;
   line-height: 1.5;
-  padding-block: 40px 56px;
+  padding-top: max(40px, calc(env(safe-area-inset-top, 0px) + 28px));
+  padding-bottom: max(96px, calc(env(safe-area-inset-bottom, 0px) + 80px));
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   min-height: 100vh;
-  overflow-x: hidden;
+  min-height: 100dvh;
+  transition: padding-right .3s ease;
+  overflow-x: clip;
   position: relative;
 }
 body::before {
@@ -57,8 +64,6 @@ body::before {
   transition: opacity .35s;
 }
 .wrap.is-loading { opacity: 0; }
-
-/* Header */
 .mono {
   width: 112px; height: 112px;
   border-radius: 50%;
@@ -103,8 +108,6 @@ h1 em { font-style: italic; color: var(--white); }
   font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--white);
 }
 .places span + span::before { content: "◆"; color: var(--ruby); margin-right: 14px; font-size: 7px; vertical-align: 2px; }
-
-/* Stats */
 .stats {
   width: 100%;
   display: grid; grid-template-columns: repeat(3, 1fr);
@@ -118,8 +121,6 @@ h1 em { font-style: italic; color: var(--white); }
   font-variant-numeric: tabular-nums;
 }
 .stats small { font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--mute); }
-
-/* Links */
 .links { width: 100%; display: flex; flex-direction: column; gap: 12px; padding: 0; margin: 0; list-style: none; }
 .link {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
@@ -155,8 +156,6 @@ h1 em { font-style: italic; color: var(--white); }
   font-size: 9.5px; font-weight: 500; letter-spacing: 0.26em; text-transform: uppercase;
   border: 1px solid currentColor; padding: 2px 8px;
 }
-
-/* Social row */
 .social { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .social a {
   width: 46px; height: 46px; border-radius: 50%;
@@ -168,11 +167,8 @@ h1 em { font-style: italic; color: var(--white); }
 .social a:hover, .social a:focus-visible { border-color: var(--ruby); background: var(--ruby); }
 .social a:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
 .social svg { width: 19px; height: 19px; fill: currentColor; }
-
 .foot { text-align: center; font-size: 10.5px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--mute); }
 .foot i { display: block; width: 36px; height: 1px; background: var(--ruby); margin: 0 auto 14px; }
-
-/* Lápis do dono */
 .pencil {
   position: fixed;
   right: max(16px, env(safe-area-inset-right, 0px));
@@ -189,10 +185,9 @@ h1 em { font-style: italic; color: var(--white); }
 .pencil:hover, .pencil:focus-visible { background: var(--ruby); border-color: var(--ruby); color: var(--white); }
 .pencil:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
 .pencil svg { width: 18px; height: 18px; fill: currentColor; }
-
-/* Janela da senha */
 .veil {
   position: fixed; inset: 0; z-index: 40;
+  overflow-y: auto;
   display: grid; place-items: center;
   padding: 16px;
   background: rgba(5, 3, 4, 0.82);
@@ -206,8 +201,6 @@ h1 em { font-style: italic; color: var(--white); }
 }
 .box h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1.1; }
 .box p { margin: 0; color: var(--mute); font-size: 13px; }
-
-/* Formulários */
 .lbl { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 10.5px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mute); }
 .in {
   width: 100%; min-width: 0;
@@ -218,6 +211,7 @@ h1 em { font-style: italic; color: var(--white); }
   border-radius: 0;
   padding: 11px 12px;
 }
+textarea.in { resize: vertical; min-height: 84px; }
 .in::placeholder { color: rgba(183, 169, 171, 0.6); }
 .in:focus { outline: 2px solid var(--ruby); outline-offset: 0; border-color: var(--ruby); }
 .btn {
@@ -238,11 +232,12 @@ h1 em { font-style: italic; color: var(--white); }
 .msg { min-height: 1.3em; margin: 0; font-size: 13px; color: var(--mute); }
 .msg.err { color: #ff6b7f; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; }
-
-/* Editor */
 .drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 30;
-  width: min(440px, 100%);
+  width: min(460px, 100%);
+  height: 100vh; height: 100dvh;
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
   display: flex; flex-direction: column;
   background: var(--ink);
   border-left: 1px solid var(--line);
@@ -258,7 +253,7 @@ h1 em { font-style: italic; color: var(--white); }
 .dr-head h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 24px; }
 .dr-foot { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); flex-wrap: wrap; }
 .dr-foot .msg { flex: 1 1 100%; min-height: 0; }
-.dr-body { flex: 1 1 auto; overflow-y: auto; padding: 8px 18px 24px; display: flex; flex-direction: column; gap: 22px; }
+.dr-body { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 8px 18px 24px; display: flex; flex-direction: column; gap: 22px; }
 .sec { display: flex; flex-direction: column; gap: 12px; padding-top: 14px; }
 .sec > h3 { margin: 0; font-size: 11px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ruby); }
 .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
@@ -273,28 +268,106 @@ h1 em { font-style: italic; color: var(--white); }
 .ph .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .ph input[type=file] { font-size: 12px; color: var(--mute); max-width: 100%; }
 .hint { margin: 0; font-size: 12px; color: var(--mute); }
-
 .toast {
   position: fixed; left: 50%; transform: translateX(-50%);
   bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   z-index: 60;
   background: var(--white); color: var(--black);
   padding: 10px 18px;
+  max-width: calc(100% - 32px);
+  text-align: center;
   font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
 }
-
+a, button, label, input, textarea { touch-action: manipulation; }
+.link { min-height: 68px; }
+.link:active { transform: scale(0.985); background: rgba(200,16,46,0.2); }
+.link.feat:active { background: #e0152f; }
+.social a:active, .pencil:active { transform: scale(0.94); }
+.btn:active { transform: scale(0.97); }
+@media (hover: none) {
+  .link:hover { transform: none; border-color: var(--line); background: linear-gradient(180deg, rgba(247,243,242,0.04), rgba(247,243,242,0.01)); }
+  .link.feat:hover { background: var(--ruby); border-color: var(--ruby); }
+  .social a:hover { border-color: var(--line); background: transparent; }
+  .pencil:hover { background: rgba(10, 7, 8, 0.7); border-color: var(--line); color: var(--mute); }
+  .pencil { width: 48px; height: 48px; }
+  .social a { width: 50px; height: 50px; }
+  .btn.sm { min-height: 40px; padding: 8px 12px; }
+  .btn { min-height: 44px; }
+  .chk input { width: 22px; height: 22px; }
+}
+@media (max-width: 420px) {
+  body { font-size: 14.5px; }
+  .wrap { gap: 24px; }
+  .mono { width: 96px; height: 96px; }
+  .mono > div { font-size: 50px; }
+  .eyebrow { letter-spacing: 0.26em; }
+  .places { letter-spacing: 0.16em; gap: 6px 10px; }
+  .places span + span::before { margin-right: 10px; }
+  .stats b { font-size: 24px; }
+  .stats small { letter-spacing: 0.16em; font-size: 9.5px; }
+  .link { gap: 10px; padding: 14px 14px; }
+  .av { width: 46px; height: 46px; }
+  .av svg { width: 20px; height: 20px; }
+  .link strong { font-size: 20px; }
+  .link span.s { font-size: 12px; }
+  .grid3 { grid-template-columns: minmax(0, 1fr); }
+  .dr-head, .dr-foot { padding-left: 14px; padding-right: 14px; }
+  .dr-body { padding-left: 14px; padding-right: 14px; }
+}
+@media (max-width: 340px) {
+  .link { grid-template-columns: auto 1fr; }
+  .link .arr { display: none; }
+  .grid2 { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .drawer { width: 100%; border-left: 0; box-shadow: none; }
+  .dr-foot .btn { flex: 1 1 0; }
+}
+@media (max-height: 480px) and (orientation: landscape) {
+  body { padding-top: max(20px, env(safe-area-inset-top, 0px)); }
+  .wrap { gap: 18px; }
+  .mono { width: 80px; height: 80px; }
+  .mono > div { font-size: 42px; }
+  h1 { font-size: clamp(48px, 12vw, 64px); }
+}
+@media (min-width: 600px) {
+  body { font-size: 16px; padding-top: 64px; }
+  .wrap { max-width: 520px; gap: 32px; }
+  .mono { width: 128px; height: 128px; }
+  .mono > div { font-size: 66px; }
+  h1 { font-size: 96px; }
+  .tag { max-width: 40ch; font-size: 16px; }
+  .eyebrow { font-size: 12px; }
+  .places { font-size: 12px; }
+  .stats b { font-size: 32px; }
+  .stats div { padding: 18px 6px; }
+  .link { padding: 20px 24px; gap: 16px; }
+  .av { width: 58px; height: 58px; }
+  .link strong { font-size: 24px; }
+  .link span.s { font-size: 13px; }
+  .link .arr { transition: transform .25s; }
+  .link:hover .arr { transform: translateX(4px); }
+}
+@media (min-width: 1024px) {
+  body::before { top: -180px; width: 900px; height: 900px; }
+  body { padding-top: 80px; }
+  .wrap { max-width: 560px; }
+  body.editing { padding-right: calc(460px + 16px); }
+  body.editing::before { left: calc(50% - 230px); }
+  .drawer { width: 460px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .link, .wrap, .pencil, .social a { transition: none; }
-  .link:hover { transform: none; }
+  .link, .wrap, .pencil, .social a, body, .btn, .link .arr { transition: none; }
+  .link:hover, .link:active, .btn:active, .social a:active, .pencil:active { transform: none; }
+  .link:hover .arr { transform: none; }
 }
 </style>
-
+</head>
+<body>
 <main class="wrap is-loading" id="app"></main>
-
 <button class="pencil" id="pencil" type="button" aria-label="Editar página" title="Editar página">
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.250V21h3.750L17.810 9.940l-3.750-3.750L3 17.250ZM20.710 7.040a1 1 0 0 0 0-1.410l-2.340-2.340a1 1 0 0 0-1.410 0l-1.830 1.830 3.750 3.750 1.830-1.830Z"/></svg>
 </button>
-
 <div class="veil" id="login" hidden>
   <form class="box" id="loginForm" autocomplete="off">
     <h2 id="loginTitle">Área de edição</h2>
@@ -312,7 +385,6 @@ h1 em { font-style: italic; color: var(--white); }
     </div>
   </form>
 </div>
-
 <aside class="drawer" id="drawer" hidden aria-label="Editor da página">
   <div class="dr-head">
     <h2>Editar página</h2>
@@ -325,21 +397,15 @@ h1 em { font-style: italic; color: var(--white); }
     <p class="msg" id="saveMsg" role="status"></p>
   </div>
 </aside>
-
 <div class="toast" id="toast" hidden role="status"></div>
-
 <script>
 (function () {
-  /* ---------- Supabase (a chave "publishable" pode ficar na página; a senha é conferida no servidor) ---------- */
   var SB_URL = 'https://abdliioyzkylccfylils.supabase.co';
   var SB_KEY = 'sb_publishable_g6l6_QmwE4Tj85_KF_XHfQ_I4gFlY_n';
-  /* Cada subdomínio é uma página: ruby.hubbio.shop -> 'ruby'. Fora do domínio (teste local) usa 'ruby'. */
   var PAGE_ID = (function () {
     var m = /^([a-z0-9-]+)\.hubbio\.shop$/i.exec(location.hostname);
     return m && m[1].toLowerCase() !== 'www' ? m[1].toLowerCase() : 'ruby';
   })();
-
-  /* ---------- Conteúdo padrão (usado até existir algo salvo) ---------- */
   var DEFAULTS = {
     avatar: '',
     eyebrow: 'Sua categoria',
@@ -357,7 +423,6 @@ h1 em { font-style: italic; color: var(--white); }
     social: { instagram: 'https://www.instagram.com/ruby.gabryelly', tiktok: 'https://www.tiktok.com/@gaby_mayes', youtube: '', whatsapp: 'https://wa.me/5598992146642' },
     footer: 'Ruby'
   };
-
   var ICONS = {
     tiktok: '<path d="M16.6 2h-3.2v13.200a2.800 2.800 0 1 1-2.800-2.800c.3 0 .6 0 .8.1V9.200a6 6 0 1 0 5.200 5.900V8.500a7.200 7.200 0 0 0 4.200 1.300V6.600A4.300 4.300 0 0 1 16.600 2Z"/>',
     instagram: '<path fill-rule="evenodd" d="M7.5 2h9A5.500 5.500 0 0 1 22 7.500v9a5.500 5.500 0 0 1-5.500 5.500h-9A5.500 5.500 0 0 1 2 16.500v-9A5.500 5.500 0 0 1 7.500 2Zm0 1.800A3.700 3.700 0 0 0 3.800 7.500v9a3.700 3.700 0 0 0 3.700 3.700h9a3.700 3.700 0 0 0 3.700-3.700v-9a3.700 3.700 0 0 0-3.700-3.700h-9ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.800a3.200 3.200 0 1 0 0 6.400 3.200 3.200 0 0 0 0-6.400ZM17.400 5.600a1.100 1.100 0 1 1 0 2.200 1.100 1.100 0 0 1 0-2.200Z"/>',
@@ -367,8 +432,6 @@ h1 em { font-style: italic; color: var(--white); }
     star: '<path d="m12 2.500 2.900 6 6.600.9-4.800 4.600 1.200 6.500L12 17.300 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9L12 2.500Z"/>',
     link: '<path d="M10.600 13.400a1 1 0 0 1 0-1.400l3-3a1 1 0 1 1 1.400 1.400l-3 3a1 1 0 0 1-1.400 0ZM8.500 17.500a4 4 0 0 1 0-5.700l1.800-1.800 1.400 1.400-1.800 1.800a2 2 0 0 0 2.800 2.800l1.800-1.800 1.400 1.400-1.800 1.800a4 4 0 0 1-5.600.1ZM15.500 6.500a4 4 0 0 1 0 5.700l-1.800 1.800-1.400-1.400 1.800-1.800a2 2 0 0 0-2.800-2.800L9.500 9.800 8.100 8.400l1.800-1.800a4 4 0 0 1 5.600-.1Z"/>'
   };
-
-  /* ---------- Utilitários ---------- */
   function $(id) { return document.getElementById(id); }
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
   function esc(s) {
@@ -398,7 +461,6 @@ h1 em { font-style: italic; color: var(--white); }
     if (/cat[aá]logo|modelo|valor/.test(t)) return 'star';
     return 'link';
   }
-  /* Foto de perfil automática pelo @ do link (serviço público unavatar.io). Se falhar, fica o ícone. */
   function autoPhoto(url) {
     var h = String(url || ''), m;
     if ((m = h.match(/tiktok\.com\/@([^\/?#]+)/i))) return 'https://unavatar.io/tiktok/' + m[1] + '?fallback=false';
@@ -423,11 +485,8 @@ h1 em { font-style: italic; color: var(--white); }
     }
     return d;
   }
-
-  /* ---------- Página ---------- */
   var state = clone(DEFAULTS);
   var saved = clone(DEFAULTS);
-
   function render() {
     var d = state, h = '';
     var av = safeImg(d.avatar)
@@ -440,13 +499,11 @@ h1 em { font-style: italic; color: var(--white); }
     var pl = d.places.filter(function (p) { return p.trim(); });
     if (pl.length) h += '<div class="places">' + pl.map(function (p) { return '<span>' + esc(p) + '</span>'; }).join('') + '</div>';
     h += '</header>';
-
     var st = d.stats.filter(function (s) { return s.n.trim() || s.l.trim(); });
     if (st.length) {
       h += '<section class="stats" aria-label="Números" style="grid-template-columns:repeat(' + st.length + ',1fr)">' +
         st.map(function (s) { return '<div><b>' + esc(s.n) + '</b><small>' + esc(s.l) + '</small></div>'; }).join('') + '</section>';
     }
-
     if (d.links.length) {
       h += '<ul class="links">' + d.links.map(function (l, i) {
         var url = safeUrl(l.url);
@@ -459,7 +516,6 @@ h1 em { font-style: italic; color: var(--white); }
           '<span class="arr">→</span></a></li>';
       }).join('') + '</ul>';
     }
-
     var so = ['instagram', 'tiktok', 'youtube', 'whatsapp'].filter(function (k) { return safeUrl(d.social[k]); });
     if (so.length) {
       h += '<nav class="social" aria-label="Redes sociais">' + so.map(function (k) {
@@ -467,11 +523,9 @@ h1 em { font-style: italic; color: var(--white); }
       }).join('') + '</nav>';
     }
     if (d.footer.trim()) h += '<footer class="foot"><i></i>' + esc(d.footer) + '</footer>';
-
     $('app').innerHTML = h;
     fillAvatars();
   }
-
   function fillAvatars() {
     var as = $('app').querySelectorAll('a.link');
     for (var n = 0; n < as.length; n++) (function (a) {
@@ -488,8 +542,6 @@ h1 em { font-style: italic; color: var(--white); }
       av.appendChild(img);
     })(as[n]);
   }
-
-  /* ---------- Supabase ---------- */
   function sb(path, opts) {
     opts = opts || {};
     var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
@@ -505,7 +557,6 @@ h1 em { font-style: italic; color: var(--white); }
       return r.json();
     }, function (e) { if (timer) clearTimeout(timer); throw e; });
   }
-
   function load() {
     var done = false;
     function reveal() { if (!done) { done = true; $('app').classList.remove('is-loading'); } }
@@ -521,13 +572,9 @@ h1 em { font-style: italic; color: var(--white); }
       reveal();
     }).catch(reveal);
   }
-
-  /* ---------- Senha ---------- */
   var password = '';
   var lastFocus = null;
-
-  var mode = 'login'; /* 'login' | 'create' */
-
+  var mode = 'login';
   function setMode(m) {
     mode = m;
     var create = m === 'create';
@@ -540,7 +587,6 @@ h1 em { font-style: italic; color: var(--white); }
     $('pw2Wrap').hidden = !create;
     $('pw2').required = create;
   }
-
   function openLogin() {
     lastFocus = document.activeElement;
     $('loginMsg').textContent = '';
@@ -554,7 +600,6 @@ h1 em { font-style: italic; color: var(--white); }
     $('login').hidden = true;
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
-
   $('pencil').addEventListener('click', function () {
     if (password) { openEditor(); return; }
     var btn = $('pencil');
@@ -577,7 +622,6 @@ h1 em { font-style: italic; color: var(--white); }
     function fail(t) { go.disabled = false; msg.className = 'msg err'; msg.textContent = t; }
     function enter() { go.disabled = false; password = pw; $('login').hidden = true; openEditor(); }
     msg.className = 'msg';
-
     if (mode === 'create') {
       if (pw.length < 8) { fail('A senha precisa ter pelo menos 8 caracteres.'); return; }
       if (pw !== $('pw2').value) { fail('As senhas não são iguais.'); return; }
@@ -589,7 +633,6 @@ h1 em { font-style: italic; color: var(--white); }
       }).catch(function () { fail('Não foi possível conectar. Tente de novo.'); });
       return;
     }
-
     go.disabled = true;
     msg.textContent = 'Conferindo...';
     sb('/rest/v1/rpc/verificar_senha', { method: 'POST', body: { p_id: PAGE_ID, p_senha: pw } }).then(function (ok) {
@@ -597,11 +640,8 @@ h1 em { font-style: italic; color: var(--white); }
       else { fail('Senha incorreta.'); $('pw').select(); }
     }).catch(function () { fail('Não foi possível conectar. Tente de novo.'); });
   });
-
-  /* ---------- Editor ---------- */
   var draft = null;
   var previewTimer = null;
-
   function field(label, key, value, ph, extra) {
     return '<label class="lbl">' + label + '<input class="in" type="text" data-k="' + key + '" value="' + esc(value) + '"' +
       (ph ? ' placeholder="' + esc(ph) + '"' : '') + (extra || '') + '></label>';
@@ -612,7 +652,6 @@ h1 em { font-style: italic; color: var(--white); }
       '<input type="file" accept="image/*" data-photo="' + path + '" aria-label="Enviar foto">' +
       (p ? '<button class="btn sm" type="button" data-act="rmphoto" data-path="' + path + '">Remover foto</button>' : '') + '</div>';
   }
-
   function editorHtml() {
     var d = draft, h = '';
     h += '<section class="sec"><h3>Perfil</h3>' +
@@ -621,12 +660,10 @@ h1 em { font-style: italic; color: var(--white); }
       field('Nome', 'name', d.name, 'Seu nome') +
       '<label class="lbl">Descrição<textarea class="in" rows="3" data-k="tagline" placeholder="Uma frase sobre você">' + esc(d.tagline) + '</textarea></label>' +
       '<div class="grid3">' + d.places.map(function (p, i) { return field('Cidade ' + (i + 1), 'places.' + i, p); }).join('') + '</div></section>';
-
     h += '<section class="sec"><h3>Números</h3><p class="hint">Deixe vazio para esconder.</p>' +
       d.stats.map(function (s, i) {
         return '<div class="grid2">' + field('Número', 'stats.' + i + '.n', s.n) + field('Legenda', 'stats.' + i + '.l', s.l) + '</div>';
       }).join('') + '</section>';
-
     h += '<section class="sec"><h3>Links</h3><p class="hint">Sem foto enviada, a página busca a foto do perfil pelo @ do link do TikTok, Instagram ou YouTube.</p>' +
       d.links.map(function (l, i) {
         var k = 'links.' + i + '.';
@@ -642,17 +679,14 @@ h1 em { font-style: italic; color: var(--white); }
           photoBlock('links.' + i, l.photo, !!autoPhoto(l.url)) + '</div>';
       }).join('') +
       '<div><button class="btn" type="button" data-act="add"' + (d.links.length >= 20 ? ' disabled' : '') + '>+ Adicionar link</button></div></section>';
-
     h += '<section class="sec"><h3>Redes sociais</h3><p class="hint">Deixe vazio para esconder o ícone.</p>' +
       field('Instagram', 'social.instagram', d.social.instagram, 'https://instagram.com/...', ' inputmode="url" autocapitalize="off"') +
       field('TikTok', 'social.tiktok', d.social.tiktok, 'https://tiktok.com/@...', ' inputmode="url" autocapitalize="off"') +
       field('YouTube', 'social.youtube', d.social.youtube, 'https://youtube.com/@...', ' inputmode="url" autocapitalize="off"') +
       field('WhatsApp', 'social.whatsapp', d.social.whatsapp, 'https://wa.me/55...', ' inputmode="url" autocapitalize="off"') + '</section>';
-
     h += '<section class="sec"><h3>Rodapé</h3>' + field('Texto', 'footer', d.footer) + '</section>';
     return h;
   }
-
   function paintEditor() {
     var body = $('drBody'), top = body.scrollTop;
     body.innerHTML = editorHtml();
@@ -665,11 +699,13 @@ h1 em { font-style: italic; color: var(--white); }
     $('saveMsg').className = 'msg';
     $('drawer').hidden = false;
     $('pencil').hidden = true;
+    document.body.classList.add('editing');
   }
   function closeEditor(revert) {
     if (revert) { state = clone(saved); render(); }
     $('drawer').hidden = true;
     $('pencil').hidden = false;
+    document.body.classList.remove('editing');
   }
   function setPath(o, path, v) {
     var p = path.split('.');
@@ -702,7 +738,6 @@ h1 em { font-style: italic; color: var(--white); }
     fr.onerror = function () { cb(''); };
     fr.readAsDataURL(file);
   }
-
   var body = $('drBody');
   body.addEventListener('input', function (e) {
     var k = e.target.getAttribute && e.target.getAttribute('data-k');
@@ -745,14 +780,12 @@ h1 em { font-style: italic; color: var(--white); }
     state = clone(draft); render();
   }
   $('drawer').addEventListener('click', onAct);
-
   function toast(t) {
     var el = $('toast');
     el.textContent = t;
     el.hidden = false;
     setTimeout(function () { el.hidden = true; }, 2200);
   }
-
   $('save').addEventListener('click', function () {
     var btn = $('save'), msg = $('saveMsg');
     clearTimeout(previewTimer);
@@ -780,15 +813,14 @@ h1 em { font-style: italic; color: var(--white); }
       msg.textContent = 'Não foi possível salvar. Confira a conexão e a configuração do Supabase.';
     });
   });
-
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     if (!$('login').hidden) closeLogin();
     else if (!$('drawer').hidden) closeEditor(true);
   });
-
   load();
 })();
 </script>
-
 </body></html>
+</body>
+</html>
